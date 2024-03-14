@@ -171,10 +171,8 @@ format: format-tools
 
 mod-tidy:
 	go mod tidy
-	cd interchaintest && go mod tidy
 
 .PHONY: format-tools lint format mod-tidy
-
 
 ###############################################################################
 ###                                Protobuf                                 ###
@@ -188,8 +186,6 @@ proto-all: proto-format proto-lint proto-gen format
 proto-gen:
 	@echo "Generating Protobuf files"
 	@$(protoImage) sh ./scripts/protocgen.sh
-# generate the stubs for the proto files from the proto directory
-	spawn stub-gen
 
 proto-format:
 	@echo "Formatting Protobuf files"
@@ -210,63 +206,11 @@ proto-check-breaking:
 	test-sim-import-export build-windows-client \
 	test-system
 
-## --- Testnet Utilities ---
-get-localic:
-	@echo "Installing local-interchain"
-	git clone --branch v8.1.0 https://github.com/strangelove-ventures/interchaintest.git interchaintest-downloader
-	cd interchaintest-downloader/local-interchain && make install
-
-is-localic-installed:
-ifeq (,$(shell which local-ic))
-	make get-localic
-endif
-
-get-heighliner:
-	git clone https://github.com/strangelove-ventures/heighliner.git
-	cd heighliner && go install
-
-local-image:
-ifeq (,$(shell which heighliner))
-	echo 'heighliner' binary not found. Consider running `make get-heighliner`
-else
-	heighliner build -c inco --local -f chains.yaml
-endif
-
-.PHONY: get-heighliner local-image is-localic-installed
-
-###############################################################################
-###                                     e2e                                 ###
-###############################################################################
-
-ictest-basic:
-	@echo "Running basic interchain tests"
-	@cd interchaintest && go test -race -v -run TestBasicChain .
-
-ictest-ibc:
-	@echo "Running IBC interchain tests"
-	@cd interchaintest && go test -race -v -run TestIBC .
-
-ictest-wasm:
-	@echo "Running cosmwasm interchain tests"
-	@cd interchaintest && go test -race -v -run TestCosmWasmIntegration .
-
-ictest-packetforward:
-	@echo "Running packet forward middleware interchain tests"
-	@cd interchaintest && go test -race -v -run TestPacketForwardMiddleware .
-
-ictest-poa:
-	@echo "Running proof of authority interchain tests"
-	@cd interchaintest && go test -race -v -run TestPOA .
-
-ictest-tokenfactory:
-	@echo "Running token factory interchain tests"
-	@cd interchaintest && go test -race -v -run TestTokenFactory .
-
 ###############################################################################
 ###                                    testnet                              ###
 ###############################################################################
 
-setup-testnet: mod-tidy is-localic-installed install local-image set-testnet-configs setup-testnet-keys
+setup-testnet: mod-tidy install local-image set-testnet-configs setup-testnet-keys
 
 # Run this before testnet keys are added
 # chainid-1 is used in the testnet.json
@@ -280,14 +224,7 @@ setup-testnet-keys:
 	-`echo "decorate bright ozone fork gallery riot bus exhaust worth way bone indoor calm squirrel merry zero scheme cotton until shop any excess stage laundry" | incod keys add acc0 --recover`
 	-`echo "wealth flavor believe regret funny network recall kiss grape useless pepper cram hint member few certain unveil rather brick bargain curious require crowd raise" | incod keys add acc1 --recover`
 
-# default testnet is with IBC
-testnet: setup-testnet
-	spawn local-ic start ibc-testnet
-
-testnet-basic: setup-testnet
-	spawn local-ic start testnet
-
 sh-testnet: mod-tidy
 	CHAIN_ID="local-1" BLOCK_TIME="1000ms" CLEAN=true sh scripts/test_node.sh
 
-.PHONY: setup-testnet set-testnet-configs testnet testnet-basic sh-testnet
+.PHONY: setup-testnet set-testnet-configs sh-testnet

@@ -16,7 +16,7 @@ export HOME_DIR=$(eval echo "${HOME_DIR:-"~/.inco"}")
 export BINARY=${BINARY:-incod}
 export DENOM=${DENOM:-ainco}
 
-export CLEAN=${CLEAN:-"false"}
+export CLEAN=${CLEAN:-"true"}
 export RPC=${RPC:-"26657"}
 export REST=${REST:-"1317"}
 export PROFF=${PROFF:-"6060"}
@@ -61,7 +61,7 @@ from_scratch () {
   add_key() {
     key=$1
     mnemonic=$2
-    echo $mnemonic | BINARY keys add $key --keyring-backend $KEYRING --algo $KEYALGO --recover
+    echo $mnemonic | $BINARY keys add $key --keyring-backend $KEYRING --algo $KEYALGO --recover
   }
 
   # inco1efd63aw40lxf3n4mhf7dzhjkr453axurqtwaal
@@ -70,7 +70,7 @@ from_scratch () {
   add_key $KEY2 "wealth flavor believe regret funny network recall kiss grape useless pepper cram hint member few certain unveil rather brick bargain curious require crowd raise"
 
   # chain initial setup
-  BINARY init $MONIKER --chain-id $CHAIN_ID --default-denom $DENOM
+  $BINARY init $MONIKER --chain-id $CHAIN_ID --default-denom $DENOM
 
   update_test_genesis () {
     cat $HOME_DIR/config/genesis.json | jq "$1" > $HOME_DIR/config/tmp_genesis.json && mv $HOME_DIR/config/tmp_genesis.json $HOME_DIR/config/genesis.json
@@ -99,15 +99,15 @@ from_scratch () {
   # === CUSTOM MODULES ===
 
   # Allocate genesis accounts
-  BINARY genesis add-genesis-account $KEY 10000000$DENOM,900test --keyring-backend $KEYRING
-  BINARY genesis add-genesis-account $KEY2 10000000$DENOM,800test --keyring-backend $KEYRING
+  $BINARY genesis add-genesis-account $KEY 10000000$DENOM,900test --keyring-backend $KEYRING
+  $BINARY genesis add-genesis-account $KEY2 10000000$DENOM,800test --keyring-backend $KEYRING
 
   # Sign genesis transaction
-  BINARY genesis gentx $KEY 1000000$DENOM --keyring-backend $KEYRING --chain-id $CHAIN_ID
+  $BINARY genesis gentx $KEY 1000000$DENOM --keyring-backend $KEYRING --chain-id $CHAIN_ID
 
-  BINARY genesis collect-gentxs
+  $BINARY genesis collect-gentxs
 
-  BINARY genesis validate-genesis
+  $BINARY genesis validate-genesis
   err=$?
   if [ $err -ne 0 ]; then
     echo "Failed to validate genesis"
@@ -123,27 +123,30 @@ fi
 
 echo "Starting node..."
 
+# Small note: "sed -i.bak" is  basically sed which works on both OSX and linux
+# https://stackoverflow.com/questions/5694228/sed-in-place-flag-that-works-both-on-mac-bsd-and-linux
+
 # Opens the RPC endpoint to outside connections
-sed -i 's/laddr = "tcp:\/\/127.0.0.1:26657"/c\laddr = "tcp:\/\/0.0.0.0:'$RPC'"/g' $HOME_DIR/config/config.toml
-sed -i 's/cors_allowed_origins = \[\]/cors_allowed_origins = \["\*"\]/g' $HOME_DIR/config/config.toml
+sed -i.bak 's/laddr = "tcp:\/\/127.0.0.1:26657"/c\laddr = "tcp:\/\/0.0.0.0:'$RPC'"/g' $HOME_DIR/config/config.toml
+sed -i.bak 's/cors_allowed_origins = \[\]/cors_allowed_origins = \["\*"\]/g' $HOME_DIR/config/config.toml
 
 # REST endpoint
-sed -i 's/address = "tcp:\/\/localhost:1317"/address = "tcp:\/\/0.0.0.0:'$REST'"/g' $HOME_DIR/config/app.toml
-sed -i 's/enable = false/enable = true/g' $HOME_DIR/config/app.toml
+sed -i.bak 's/address = "tcp:\/\/localhost:1317"/address = "tcp:\/\/0.0.0.0:'$REST'"/g' $HOME_DIR/config/app.toml
+sed -i.bak 's/enable = false/enable = true/g' $HOME_DIR/config/app.toml
 
 # peer exchange
-sed -i 's/pprof_laddr = "localhost:6060"/pprof_laddr = "localhost:'$PROFF_LADDER'"/g' $HOME_DIR/config/config.toml
-sed -i 's/laddr = "tcp:\/\/0.0.0.0:26656"/laddr = "tcp:\/\/0.0.0.0:'$P2P'"/g' $HOME_DIR/config/config.toml
+sed -i.bak 's/pprof_laddr = "localhost:6060"/pprof_laddr = "localhost:'$PROFF_LADDER'"/g' $HOME_DIR/config/config.toml
+sed -i.bak 's/laddr = "tcp:\/\/0.0.0.0:26656"/laddr = "tcp:\/\/0.0.0.0:'$P2P'"/g' $HOME_DIR/config/config.toml
 
 # GRPC
-sed -i 's/address = "localhost:9090"/address = "0.0.0.0:'$GRPC'"/g' $HOME_DIR/config/app.toml
-sed -i 's/address = "localhost:9091"/address = "0.0.0.0:'$GRPC_WEB'"/g' $HOME_DIR/config/app.toml
+sed -i.bak 's/address = "localhost:9090"/address = "0.0.0.0:'$GRPC'"/g' $HOME_DIR/config/app.toml
+sed -i.bak 's/address = "localhost:9091"/address = "0.0.0.0:'$GRPC_WEB'"/g' $HOME_DIR/config/app.toml
 
 # Rosetta Api
-sed -i 's/address = ":8080"/address = "0.0.0.0:'$ROSETTA'"/g' $HOME_DIR/config/app.toml
+sed -i.bak 's/address = ":8080"/address = "0.0.0.0:'$ROSETTA'"/g' $HOME_DIR/config/app.toml
 
 # Faster blocks
-sed -i 's/timeout_commit = "5s"/timeout_commit = "'$BLOCK_TIME'"/g' $HOME_DIR/config/config.toml
+sed -i.bak 's/timeout_commit = "5s"/timeout_commit = "'$BLOCK_TIME'"/g' $HOME_DIR/config/config.toml
 
 # Start the node with 0 gas fees
-BINARY start --pruning=nothing  --minimum-gas-prices=0$DENOM --rpc.laddr="tcp://0.0.0.0:$RPC"
+$BINARY start --pruning=nothing  --minimum-gas-prices=0$DENOM --rpc.laddr="tcp://0.0.0.0:$RPC"

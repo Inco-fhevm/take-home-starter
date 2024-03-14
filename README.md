@@ -1,24 +1,21 @@
-# Generated With [Spawn](https://github.com/rollchains/spawn)
+# Inco Paillier Testnet
 
-## Module Scaffolding
+## Run a local node
 
-- `spawn module new <name>` *Generates a Cosmos module template*
+1. Build the node
 
-## Content Generation
+```bash
+make build
+```
 
-- `make proto-gen` *Generates golang code from proto files, stubs interfaces*
+The binary will be in `./build/incod`.
 
-## Testnet
+2. Make sure the `incod` binary is in your $PATH.
 
-- `make testnet` *IBC testnet from chain <-> local cosmos-hub*
-- `make sh-testnet` *Single node, no IBC. quick iteration*
+3. Run the node
 
-## Local Images
+```bash
+./scripts/test_node.sh
+```
 
-- `make install`      *Builds the chain's binary*
-- `make local-image`  *Builds the chain's docker image*
-
-## Testing
-
-- `go test ./... -v` *Unit test*
-- `make ictest-*`  *E2E testing*
+You should see the node's logs running in your terminal. If you stop the node, and wish to re-run from the same height (not create a new chain), you can pass in `CLEAN=false ./scripts/test_node.sh`.
