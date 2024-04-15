@@ -6,7 +6,7 @@ import (
 	"cosmossdk.io/log"
 
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
-	"github.com/inco-fhevm/inco/app"
+	"github.com/inco-fhevm/take-home-starter/app"
 )
 
 func main() {

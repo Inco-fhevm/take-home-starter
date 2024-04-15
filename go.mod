@@ -1,4 +1,4 @@
-module github.com/inco-fhevm/inco
+module github.com/inco-fhevm/take-home-starter
 
 go 1.21
 

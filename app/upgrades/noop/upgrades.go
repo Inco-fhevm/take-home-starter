@@ -8,7 +8,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/types/module"
 
-	"github.com/inco-fhevm/inco/app/upgrades"
+	"github.com/inco-fhevm/take-home-starter/app/upgrades"
 )
 
 // NewUpgrade constructor

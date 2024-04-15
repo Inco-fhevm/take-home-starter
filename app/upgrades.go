@@ -5,8 +5,8 @@ import (
 
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 
-	"github.com/inco-fhevm/inco/app/upgrades"
-	"github.com/inco-fhevm/inco/app/upgrades/noop"
+	"github.com/inco-fhevm/take-home-starter/app/upgrades"
+	"github.com/inco-fhevm/take-home-starter/app/upgrades/noop"
 )
 
 // Upgrades list of chain upgrades

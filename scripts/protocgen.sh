@@ -2,7 +2,7 @@
 
 set -e
 
-GO_MOD_PACKAGE="github.com/inco-fhevm/inco"
+GO_MOD_PACKAGE="github.com/inco-fhevm/take-home-starter"
 
 echo "Generating gogo proto code"
 cd proto

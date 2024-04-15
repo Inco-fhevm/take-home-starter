@@ -9,7 +9,7 @@ import (
 
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 
-	"github.com/inco-fhevm/inco/app/params"
+	"github.com/inco-fhevm/take-home-starter/app/params"
 )
 
 // MakeEncodingConfig creates a new EncodingConfig with all modules registered. For testing only

@@ -20,8 +20,8 @@ import (
 	txmodule "github.com/cosmos/cosmos-sdk/x/auth/tx/config"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	"github.com/inco-fhevm/inco/app"
-	"github.com/inco-fhevm/inco/app/params"
+	"github.com/inco-fhevm/take-home-starter/app"
+	"github.com/inco-fhevm/take-home-starter/app/params"
 )
 
 // NewRootCmd creates a new root command for chain app. It is called once in the
