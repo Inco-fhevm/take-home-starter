@@ -3,7 +3,7 @@ package observer
 import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 
-	modulev1 "github.com/inco-fhevm/take-home-starter/api/observer/v1"
+	modulev1 "github.com/inco-fhevm/take-home-starter/api/starter/observer/v1"
 )
 
 // AutoCLIOptions implements the autocli.HasAutoCLIConfig interface.

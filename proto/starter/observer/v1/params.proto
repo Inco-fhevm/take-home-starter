@@ -1,5 +1,5 @@
 syntax = "proto3";
-package incofhevm.takehomestarter.observer.v1;
+package starter.observer.v1;
 
 import "amino/amino.proto";
 

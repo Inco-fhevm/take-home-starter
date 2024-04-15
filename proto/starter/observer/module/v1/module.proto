@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package incofhevm.takehomestarter.oracle.module.v1;
+package starter.observer.module.v1;
 
 import "cosmos/app/v1alpha1/module.proto";
 

@@ -20,7 +20,7 @@ import (
 
 	// this line is used by starport scaffolding # 1
 
-	modulev1 "github.com/inco-fhevm/take-home-starter/api/observer/module/v1"
+	modulev1 "github.com/inco-fhevm/take-home-starter/api/starter/observer/module/v1"
 
 	"github.com/inco-fhevm/take-home-starter/x/observer/keeper"
 	"github.com/inco-fhevm/take-home-starter/x/observer/types"
