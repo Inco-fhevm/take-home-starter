@@ -1,5 +1,9 @@
 # Inco Take-Home Starter Template
 
+This template can be used as a base for Inco's take-home challenge. It contains a bare minimum Cosmos SDK app, which contains an empty `x/observer` module.
+
+Below are some useful commands that can be run in the template.
+
 ## Run a local node
 
 1. Build the node
@@ -22,7 +26,7 @@ You should see the node's logs running in your terminal. If you stop the node, a
 
 ## Build Protobuf files
 
-If you modify the `*.proto` files, you need to regenerate the `*.pb.go` files. Make sure you have Docker installed, and you can use the following command:
+If you modify the `*.proto` files, you need to regenerate the `*.{pb,pulsar}.go` files. Make sure you have Docker installed, and you can use the following command:
 
 ```bash
 make proto-gen
