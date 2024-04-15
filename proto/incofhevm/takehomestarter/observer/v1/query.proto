@@ -1,0 +1,31 @@
+syntax = "proto3";
+package incofhevm.takehomestarter.observer.v1;
+
+import "amino/amino.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "incofhevm/takehomestarter/observer/v1/params.proto";
+import "incofhevm/takehomestarter/observer/v1/types.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "x/observer/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Parameters queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/incofhevm/takehomestarter/observer/v1/params";
+  }
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [
+    (amino.dont_omitempty) = true,
+    (gogoproto.nullable) = false
+  ];
+}

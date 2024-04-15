@@ -106,6 +106,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+
+	observerkeeper "github.com/inco-fhevm/take-home-starter/x/observer/keeper"
+	observermodule "github.com/inco-fhevm/take-home-starter/x/observer/module"
+	observertypes "github.com/inco-fhevm/take-home-starter/x/observer/types"
 )
 
 const appName = "inco"
@@ -186,6 +190,8 @@ type ChainApp struct {
 	GroupKeeper           groupkeeper.Keeper
 	ConsensusParamsKeeper consensusparamkeeper.Keeper
 	CircuitKeeper         circuitkeeper.Keeper
+
+	ObserverKeeper observerkeeper.Keeper
 
 	// the module manager
 	ModuleManager      *module.Manager
@@ -277,6 +283,7 @@ func NewChainApp(
 		authzkeeper.StoreKey,
 		group.StoreKey,
 		// non sdk store keys
+		observertypes.StoreKey,
 	)
 
 	tkeys := storetypes.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -429,6 +436,13 @@ func NewChainApp(
 		groupConfig,
 	)
 
+	app.ObserverKeeper = observerkeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(keys[observerkeeper.StoreKey]),
+		app.Logger(),
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
 	// get skipUpgradeHeights from the app options
 	skipUpgradeHeights := map[int64]bool{}
 	for _, h := range cast.ToIntSlice(appOpts.Get(server.FlagUnsafeSkipUpgrades)) {
@@ -521,6 +535,7 @@ func NewChainApp(
 		// non sdk modules
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)),
 		// custom
+		observermodule.NewAppModule(appCodec, app.ObserverKeeper, app.AccountKeeper, app.BankKeeper),
 	)
 
 	// BasicModuleManager defines the module BasicManager is in charge of setting up basic,
@@ -557,6 +572,7 @@ func NewChainApp(
 		genutiltypes.ModuleName,
 		authz.ModuleName,
 		// additional non simd modules
+		observertypes.ModuleName,
 	)
 
 	app.ModuleManager.SetOrderEndBlockers(
@@ -567,6 +583,7 @@ func NewChainApp(
 		feegrant.ModuleName,
 		group.ModuleName,
 		// additional non simd modules
+		observertypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -584,6 +601,7 @@ func NewChainApp(
 		feegrant.ModuleName, group.ModuleName, paramstypes.ModuleName, upgradetypes.ModuleName,
 		vestingtypes.ModuleName, consensusparamtypes.ModuleName, circuittypes.ModuleName,
 		// additional non simd modules
+		observertypes.ModuleName,
 	}
 	app.ModuleManager.SetOrderInitGenesis(genesisModuleOrder...)
 	app.ModuleManager.SetOrderExportGenesis(genesisModuleOrder...)

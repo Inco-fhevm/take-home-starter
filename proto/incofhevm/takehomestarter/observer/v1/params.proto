@@ -1,0 +1,12 @@
+syntax = "proto3";
+package incofhevm.takehomestarter.observer.v1;
+
+import "amino/amino.proto";
+
+option go_package = "x/observer/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (amino.name) = "x/observer/Params";
+
+}

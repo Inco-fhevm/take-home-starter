@@ -1,4 +1,4 @@
-# Inco Paillier Testnet
+# Inco Take-Home Starter Template
 
 ## Run a local node
 
@@ -19,3 +19,11 @@ The binary will be in `./build/incod`.
 ```
 
 You should see the node's logs running in your terminal. If you stop the node, and wish to re-run from the same height (not create a new chain), you can pass in `CLEAN=false ./scripts/test_node.sh`.
+
+## Build Protobuf files
+
+If you modify the `*.proto` files, you need to regenerate the `*.pb.go` files. Make sure you have Docker installed, and you can use the following command:
+
+```bash
+make proto-gen
+```
