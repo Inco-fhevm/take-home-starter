@@ -21,4 +21,5 @@ buf generate --template buf.gen.pulsar.yaml
 
 cd ..
 
+rm -r api/starter
 mv starter api/
